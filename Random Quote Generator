@@ -1,0 +1,69 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.event.*;
+import java.util.*;
+
+public class QuoteGeneratorApp extends JFrame {
+
+    private JLabel quoteLabel;
+    private JButton generateButton;
+    private JButton copyButton;
+    private List<String> quotes;
+
+    public QuoteGeneratorApp() {
+        setTitle("Random Quote Generator");
+        setSize(500, 200);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+
+        // Quotes list
+        quotes = new ArrayList<>(Arrays.asList(
+            "The best way to get started is to quit talking and begin doing. – Walt Disney",
+            "Success is not the key to happiness. Happiness is the key to success.",
+            "Don't watch the clock; do what it does. Keep going. – Sam Levenson",
+            "Dream big and dare to fail. – Norman Vaughan",
+            "Life is what happens when you're busy making other plans. – John Lennon"
+        ));
+
+        quoteLabel = new JLabel("Click below to generate a quote!", SwingConstants.CENTER);
+        quoteLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        quoteLabel.setWrapStyleWord(true);
+        quoteLabel.setLineWrap(true);
+
+        generateButton = new JButton("Generate Quote");
+        copyButton = new JButton("Copy Quote");
+
+        // Panel for buttons
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(generateButton);
+        buttonPanel.add(copyButton);
+
+        // Event Listeners
+        generateButton.addActionListener(e -> showRandomQuote());
+        copyButton.addActionListener(e -> copyToClipboard(quoteLabel.getText()));
+
+        // Add components
+        add(quoteLabel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+
+        setVisible(true);
+    }
+
+    private void showRandomQuote() {
+        Random rand = new Random();
+        String quote = quotes.get(rand.nextInt(quotes.size()));
+        quoteLabel.setText("<html><div style='text-align: center;'>" + quote + "</div></html>");
+    }
+
+    private void copyToClipboard(String text) {
+        StringSelection selection = new StringSelection(text);
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(selection, null);
+        JOptionPane.showMessageDialog(this, "Quote copied to clipboard!");
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(QuoteGeneratorApp::new);
+    }
+}
