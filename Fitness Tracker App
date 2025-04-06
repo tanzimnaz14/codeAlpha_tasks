@@ -1,0 +1,122 @@
+import java.util.*;
+
+class Workout {
+    String type;
+    String name;
+    int duration; // in minutes
+    int caloriesBurned;
+
+    public Workout(String type, String name, int duration, int caloriesBurned) {
+        this.type = type;
+        this.name = name;
+        this.duration = duration;
+        this.caloriesBurned = caloriesBurned;
+    }
+
+    public String toString() {
+        return String.format("%s - %s | %d mins | %d cal burned", type, name, duration, caloriesBurned);
+    }
+}
+
+class Goal {
+    String goalName;
+    int targetCalories;
+
+    public Goal(String goalName, int targetCalories) {
+        this.goalName = goalName;
+        this.targetCalories = targetCalories;
+    }
+
+    public String toString() {
+        return String.format("Goal: %s | Target Calories: %d", goalName, targetCalories);
+    }
+}
+
+public class FitnessTrackerApp {
+    private static List<Workout> workoutHistory = new ArrayList<>();
+    private static List<Goal> fitnessGoals = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        int choice;
+        do {
+            System.out.println("\n=== Fitness Tracker App ===");
+            System.out.println("1. Add Workout");
+            System.out.println("2. View Workout History");
+            System.out.println("3. Set Fitness Goal");
+            System.out.println("4. View Goals");
+            System.out.println("5. View Progress");
+            System.out.println("6. Exit");
+            System.out.print("Choose option: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1 -> addWorkout();
+                case 2 -> viewWorkouts();
+                case 3 -> setGoal();
+                case 4 -> viewGoals();
+                case 5 -> viewProgress();
+                case 6 -> System.out.println("Thanks for using the Fitness Tracker. Stay healthy!");
+                default -> System.out.println("Invalid choice. Try again.");
+            }
+        } while (choice != 6);
+    }
+
+    private static void addWorkout() {
+        System.out.print("Enter workout type (e.g., Cardio, Strength): ");
+        String type = scanner.nextLine();
+        System.out.print("Enter workout name (e.g., Running, Push-ups): ");
+        String name = scanner.nextLine();
+        System.out.print("Enter duration in minutes: ");
+        int duration = scanner.nextInt();
+        System.out.print("Enter calories burned: ");
+        int calories = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        workoutHistory.add(new Workout(type, name, duration, calories));
+        System.out.println("Workout recorded!");
+    }
+
+    private static void viewWorkouts() {
+        if (workoutHistory.isEmpty()) {
+            System.out.println("No workouts recorded yet.");
+            return;
+        }
+        System.out.println("\n--- Workout History ---");
+        for (Workout w : workoutHistory) {
+            System.out.println(w);
+        }
+    }
+
+    private static void setGoal() {
+        System.out.print("Enter goal name (e.g., Burn 1000 cal this week): ");
+        String goalName = scanner.nextLine();
+        System.out.print("Enter target calories to burn: ");
+        int target = scanner.nextInt();
+        scanner.nextLine(); // consume newline
+
+        fitnessGoals.add(new Goal(goalName, target));
+        System.out.println("Goal set!");
+    }
+
+    private static void viewGoals() {
+        if (fitnessGoals.isEmpty()) {
+            System.out.println("No fitness goals set.");
+            return;
+        }
+        System.out.println("\n--- Fitness Goals ---");
+        for (Goal g : fitnessGoals) {
+            System.out.println(g);
+        }
+    }
+
+    private static void viewProgress() {
+        int totalCalories = workoutHistory.stream().mapToInt(w -> w.caloriesBurned).sum();
+        System.out.println("\nTotal Calories Burned: " + totalCalories);
+        for (Goal g : fitnessGoals) {
+            String status = totalCalories >= g.targetCalories ? "✅ Achieved" : "❌ In Progress";
+            System.out.println(g.goalName + " - " + status);
+        }
+    }
+}
