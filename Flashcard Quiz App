@@ -1,0 +1,100 @@
+import java.util.*;
+
+class Flashcard {
+    private String question;
+    private String answer;
+
+    public Flashcard(String question, String answer) {
+        this.question = question;
+        this.answer = answer;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public boolean checkAnswer(String userAnswer) {
+        return this.answer.equalsIgnoreCase(userAnswer.trim());
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+}
+
+class FlashcardApp {
+    private List<Flashcard> flashcards;
+    private Scanner scanner;
+
+    public FlashcardApp() {
+        flashcards = new ArrayList<>();
+        scanner = new Scanner(System.in);
+    }
+
+    public void start() {
+        int choice;
+        do {
+            System.out.println("\n=== Flashcard Quiz App ===");
+            System.out.println("1. Add Flashcard");
+            System.out.println("2. Start Quiz");
+            System.out.println("3. Exit");
+            System.out.print("Choose an option: ");
+            choice = scanner.nextInt();
+            scanner.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1:
+                    addFlashcard();
+                    break;
+                case 2:
+                    startQuiz();
+                    break;
+                case 3:
+                    System.out.println("Exiting app. Happy studying!");
+                    break;
+                default:
+                    System.out.println("Invalid option. Try again.");
+            }
+        } while (choice != 3);
+    }
+
+    private void addFlashcard() {
+        System.out.print("Enter question: ");
+        String question = scanner.nextLine();
+        System.out.print("Enter answer: ");
+        String answer = scanner.nextLine();
+        flashcards.add(new Flashcard(question, answer));
+        System.out.println("Flashcard added!");
+    }
+
+    private void startQuiz() {
+        if (flashcards.isEmpty()) {
+            System.out.println("No flashcards available. Add some first.");
+            return;
+        }
+
+        int score = 0;
+        System.out.println("\n--- Quiz Start ---");
+        for (Flashcard card : flashcards) {
+            System.out.println("Question: " + card.getQuestion());
+            System.out.print("Your answer: ");
+            String userAnswer = scanner.nextLine();
+
+            if (card.checkAnswer(userAnswer)) {
+                System.out.println("Correct!");
+                score++;
+            } else {
+                System.out.println("Wrong. Correct answer: " + card.getAnswer());
+            }
+        }
+
+        System.out.println("Quiz complete. You scored: " + score + "/" + flashcards.size());
+    }
+}
+
+public class FlashcardQuizApp {
+    public static void main(String[] args) {
+        FlashcardApp app = new FlashcardApp();
+        app.start();
+    }
+}
